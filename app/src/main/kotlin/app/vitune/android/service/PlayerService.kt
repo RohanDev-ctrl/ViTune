@@ -369,9 +369,9 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             subscribe(PlayerPreferences.isInvincibilityEnabledProperty) {
                 this@PlayerService.isInvincibilityEnabled = it
             }
-            subscribe(PlayerPreferences.pitchProperty) {
-                player.setPlaybackPitch(it.coerceAtLeast(0.01f))
-            }
+            subscribe(PlayerPreferences.pitchProperty) { updatePlaybackPitch() }
+            subscribe(PlayerPreferences.tuning432Property) { updatePlaybackPitch() }
+            subscribe(PlayerPreferences.tuningFrequencyProperty) { updatePlaybackPitch() }
             subscribe(PlayerPreferences.queueLoopEnabledProperty) { updateRepeatMode() }
             subscribe(PlayerPreferences.resumePlaybackWhenDeviceConnectedProperty) {
                 maybeResumePlaybackWhenDeviceConnected()
@@ -412,6 +412,8 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             else -> Player.REPEAT_MODE_OFF
         }
     }
+
+    private fun updatePlaybackPitch() = player.setPlaybackPitch(PlayerPreferences.effectivePitch)
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (!player.shouldBePlaying || PlayerPreferences.stopWhenClosed) {

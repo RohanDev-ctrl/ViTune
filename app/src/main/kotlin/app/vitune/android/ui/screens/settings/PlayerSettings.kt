@@ -157,6 +157,25 @@ fun PlayerSettings() = with(PlayerPreferences) {
             }
 
             SwitchSettingsEntry(
+                title = stringResource(R.string.tuning_432),
+                text = stringResource(R.string.tuning_432_description),
+                isChecked = tuning432,
+                onCheckedChange = { tuning432 = it }
+            )
+
+            AnimatedVisibility(visible = tuning432) {
+                IntSettingsEntry(
+                    title = stringResource(R.string.tuning_frequency),
+                    text = "${stringResource(R.string.tuning_frequency_description)} " +
+                        "(${stringResource(R.string.format_hz, tuningFrequency.toString())})",
+                    currentValue = tuningFrequency,
+                    setValue = { tuningFrequency = it },
+                    defaultValue = 432,
+                    range = tuningFrequencyRange
+                )
+            }
+
+            SwitchSettingsEntry(
                 title = stringResource(R.string.sponsor_block),
                 text = stringResource(R.string.sponsor_block_description),
                 isChecked = sponsorBlockEnabled,

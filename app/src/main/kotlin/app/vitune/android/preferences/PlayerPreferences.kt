@@ -31,6 +31,10 @@ object PlayerPreferences : GlobalPreferencesHolder() {
     var speed by speedProperty
     val pitchProperty = float(1f)
     var pitch by pitchProperty
+    val tuning432Property = boolean(false)
+    var tuning432 by tuning432Property
+    val tuningFrequencyProperty = int(432)
+    var tuningFrequency by tuningFrequencyProperty
     var minimumSilence by long(2_000_000L)
     var persistentQueue by boolean(true)
     var stopWhenClosed by boolean(false)
@@ -58,6 +62,13 @@ object PlayerPreferences : GlobalPreferencesHolder() {
 
     val sponsorBlockEnabledProperty = boolean(false)
     var sponsorBlockEnabled by sponsorBlockEnabledProperty
+
+    val tuningFrequencyRange = 400..480
+
+    // A4 = 440 Hz is the reference the source audio is assumed to be tuned to
+    val effectivePitch
+        get() = pitch.coerceAtLeast(0.01f) *
+            if (tuning432) tuningFrequency.coerceIn(tuningFrequencyRange) / 440f else 1f
 
     enum class PlayerLayout(val displayName: @Composable () -> String) {
         Classic(displayName = { stringResource(R.string.classic_player_layout_name) }),
