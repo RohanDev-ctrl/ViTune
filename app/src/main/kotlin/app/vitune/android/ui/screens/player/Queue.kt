@@ -67,6 +67,7 @@ import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.service.PlayerService
+import app.vitune.android.service.downloadState
 import app.vitune.android.transaction
 import app.vitune.android.ui.components.BottomSheet
 import app.vitune.android.ui.components.BottomSheetState
@@ -90,6 +91,7 @@ import app.vitune.android.utils.DisposableListener
 import app.vitune.android.utils.addNext
 import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.enqueue
+import app.vitune.android.utils.isCached
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.onFirst
 import app.vitune.android.utils.semiBold
@@ -146,6 +148,7 @@ fun Queue(
 
     var windows by remember { mutableStateOf(binder.player.currentTimeline.windows) }
     var shouldBePlaying by remember { mutableStateOf(binder.player.shouldBePlaying) }
+    val isDownloading by downloadState.collectAsState()
     var previousMediaId by remember { mutableStateOf(windows[mediaItemIndex].mediaItem.mediaId) }
 
     val lazyListState = rememberLazyListState()
@@ -312,6 +315,18 @@ fun Queue(
                                     }
                                 },
                                 trailingContent = {
+                                    if (
+                                        isCached(
+                                            mediaId = window.mediaItem.mediaId,
+                                            key = isDownloading
+                                        )
+                                    ) Image(
+                                        painter = painterResource(R.drawable.download),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(colorPalette.accent),
+                                        modifier = Modifier.size(16.dp)
+                                    )
+
                                     ReorderHandle(
                                         reorderingState = reorderingState,
                                         index = i

@@ -387,6 +387,8 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             subscribe(PlayerPreferences.volumeNormalizationBaseGainProperty) { maybeNormalizeVolume() }
             subscribe(PlayerPreferences.volumeNormalizationProperty) { maybeNormalizeVolume() }
             subscribe(PlayerPreferences.sponsorBlockEnabledProperty) { maybeSponsorBlock() }
+            subscribe(DataPreferences.autoPrecacheProperty) { maybePrecacheQueue() }
+            subscribe(DataPreferences.autoPrecacheSongsProperty) { maybePrecacheQueue() }
 
             launch {
                 val audioManager = getSystemService<AudioManager>()
@@ -414,6 +416,18 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
     }
 
     private fun updatePlaybackPitch() = player.setPlaybackPitch(PlayerPreferences.effectivePitch)
+
+    private fun maybePrecacheQueue() {
+        if (!DataPreferences.autoPrecache || player.mediaItemCount == 0) return
+
+        val fromIndex = player.currentMediaItemIndex
+        val toIndex = (fromIndex + DataPreferences.autoPrecacheSongs.coerceAtLeast(0))
+            .coerceAtMost(player.mediaItemCount - 1)
+
+        for (index in fromIndex..toIndex) {
+            PrecacheService.scheduleCache(applicationContext, player.getMediaItemAt(index))
+        }
+    }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (!player.shouldBePlaying || PlayerPreferences.stopWhenClosed) {
@@ -506,6 +520,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
         maybeProcessRadio()
+        maybePrecacheQueue()
 
         with(bitmapProvider) {
             when {

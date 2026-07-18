@@ -294,6 +294,10 @@
     <string name="tuning_frequency">Tuning frequency</string>
     <string name="tuning_frequency_description">The frequency A4 gets retuned to</string>
     <string name="format_hz">%1$s Hz</string>
+    <string name="auto_precache">Pre-cache queue</string>
+    <string name="auto_precache_description">Automatically download the playing song and the upcoming songs in the queue for offline playback</string>
+    <string name="auto_precache_songs">Songs to pre-cache ahead</string>
+    <string name="auto_precache_songs_description">How many of the next songs in the queue get pre-cached</string>
     <string name="sponsor_block">Sponsorblock</string>
     <string name="sponsor_block_description">Blocks sponsored/offtopic content using data from the Sponsorblock API</string>
     <string name="reverb">Reverb</string>

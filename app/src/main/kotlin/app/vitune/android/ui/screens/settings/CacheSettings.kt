@@ -122,6 +122,22 @@ fun CacheSettings() = with(DataPreferences) {
                     isChecked = PlayerPreferences.pauseCache,
                     onCheckedChange = { PlayerPreferences.pauseCache = it }
                 )
+                SwitchSettingsEntry(
+                    title = stringResource(R.string.auto_precache),
+                    text = stringResource(R.string.auto_precache_description),
+                    isChecked = autoPrecache,
+                    onCheckedChange = { autoPrecache = it }
+                )
+                AnimatedVisibility(visible = autoPrecache) {
+                    IntSettingsEntry(
+                        title = stringResource(R.string.auto_precache_songs),
+                        text = stringResource(R.string.auto_precache_songs_description),
+                        currentValue = autoPrecacheSongs,
+                        setValue = { autoPrecacheSongs = it },
+                        defaultValue = 3,
+                        range = 0..10
+                    )
+                }
             }
         }
     }
